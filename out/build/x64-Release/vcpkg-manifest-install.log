@@ -1,0 +1,104 @@
+Detecting compiler hash for triplet x64-windows...
+The following packages will be built and installed:
+    catch2[core]:x64-windows -> 2.13.7#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\catch2\4df380019e5c3a0e450798db43d9ce70906b7aad
+    fmt[core]:x64-windows -> 8.0.1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\fmt\105214e3085a1404bca0fa89e7d80aa016e8cacb
+    glew[core]:x64-windows -> 2.2.0 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\glew\3211ed09c36542372ab3f1f690a42e2edbb072bc
+    glfw3[core]:x64-windows -> 3.3.4 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\glfw3\aa7325438c3156b62488a559218d12e7e860196c
+    glm[core]:x64-windows -> 0.9.9.8#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\glm\4aafac80f39a72fadaf6a31afb961790678062de
+    imgui[core]:x64-windows -> 1.84.2 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\imgui\c07b221daf49a22fc9e8e7571bb329485f618a7f
+    ms-gsl[core]:x64-windows -> 3.1.0#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\ms-gsl\d51947d40835a72b1728c68ca8587e04e3f8e1e2
+    nativefiledialog[core]:x64-windows -> 2019-08-28#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\nativefiledialog\d765a8f84ba49c18701f68b7471f1b93b7313ddc
+  * opengl[core]:x64-windows -> 0.0#9 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\opengl\9fa8ed2a1fb625613a32ee95d2413dbc921860f7
+    stb[core]:x64-windows -> 2020-09-14#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\stb\fa6d7e998f98f122efa37f456ffa498d546185b9
+    tbb[core]:x64-windows -> 2020_U3#6 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\tbb\e168e03c2e5776bdee59accf5f643ae26b0ddd84
+  * vcpkg-cmake[core]:x64-windows -> 2021-07-30 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\vcpkg-cmake\c6df7e0faeda9e783175746c7c440c9bc2bdb111
+  * vcpkg-cmake-config[core]:x64-windows -> 2021-05-22#1 -- E:\TUDelftComputerScience\Data Visualization\project2\vcpkg\vcpkg\buildtrees\versioning_\versions\vcpkg-cmake-config\330cc51bc99c6b71ed5fb51901f6f838684015a5
+Additional packages (*) will be modified to complete this operation.
+Restored 13 package(s) from C:\Users\宋英楷\AppData\Local\vcpkg\archives in 982.2 ms. Use --debug to see more details.
+Installing 1/13 vcpkg-cmake-config:x64-windows...
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 40.11 ms
+Installing 2/13 vcpkg-cmake:x64-windows...
+Elapsed time to handle vcpkg-cmake:x64-windows: 139.6 ms
+Installing 3/13 catch2:x64-windows...
+Elapsed time to handle catch2:x64-windows: 310.3 ms
+Installing 4/13 fmt:x64-windows...
+Elapsed time to handle fmt:x64-windows: 218.6 ms
+Installing 5/13 opengl:x64-windows...
+Elapsed time to handle opengl:x64-windows: 54.65 ms
+Installing 6/13 glew:x64-windows...
+Elapsed time to handle glew:x64-windows: 132.5 ms
+Installing 7/13 glfw3:x64-windows...
+Elapsed time to handle glfw3:x64-windows: 112.1 ms
+Installing 8/13 glm:x64-windows...
+Elapsed time to handle glm:x64-windows: 2.255 s
+Installing 9/13 imgui:x64-windows...
+Elapsed time to handle imgui:x64-windows: 105.8 ms
+Installing 10/13 ms-gsl:x64-windows...
+Elapsed time to handle ms-gsl:x64-windows: 94.1 ms
+Installing 11/13 nativefiledialog:x64-windows...
+Elapsed time to handle nativefiledialog:x64-windows: 65.68 ms
+Installing 12/13 stb:x64-windows...
+Elapsed time to handle stb:x64-windows: 164.4 ms
+Installing 13/13 tbb:x64-windows...
+Elapsed time to handle tbb:x64-windows: 759.9 ms
+Total install time: 5.435 s
+catch2 provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(Catch2 CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Catch2::Catch2)
+
+The package fmt provides CMake targets:
+
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt)
+
+    # Or use the header-only version
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt-header-only)
+
+The package glew is compatible with built-in CMake targets:
+
+    find_package(GLEW REQUIRED)
+    target_link_libraries(main PRIVATE GLEW::GLEW)
+
+glfw3 provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(glfw3 CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glfw)
+
+glm provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(glm CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE glm::glm)
+
+imgui provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(imgui CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE imgui::imgui)
+
+ms-gsl provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(Microsoft.GSL CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Microsoft.GSL::GSL)
+
+nativefiledialog provides CMake targets:
+
+    # this is heuristically generated, and may not be correct
+    find_package(unofficial-nativefiledialog CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::nativefiledialog::nfd)
+
+stb is header-only and can be used from CMake via:
+
+    find_path(STB_INCLUDE_DIRS "stb.h")
+    target_include_directories(main PRIVATE ${STB_INCLUDE_DIRS})
+
+The package tbb provides CMake targets:
+
+    find_package(TBB CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE TBB::tbb)
+

@@ -1,0 +1,10 @@
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/VolVis.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/ImGuiWrapper.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/Viewer.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/test.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/integrity_tests/CMakeFiles/IntegrityTests.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/integrity_tests/CMakeFiles/rebuild_cache.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/integrity_tests/CMakeFiles/test.dir
+E:/TUDelftComputerScience/Data Visualization/project2/github-repo/VolVis_Extension/out/build/x64-Debug/integrity_tests/CMakeFiles/edit_cache.dir

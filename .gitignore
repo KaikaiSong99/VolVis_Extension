@@ -1,32 +1,35 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+.vs
+out/build/x64-Debug/.ninja_deps
+out/build/x64-Debug/.ninja_log
+out/build/x64-Debug/CMakeFiles/ImGuiWrapper.dir/ImGuiWrapper.pdb
+out/build/x64-Debug/CMakeFiles/ImGuiWrapper.dir/src/imgui/imgui_impl_glfw.cpp.obj
+out/build/x64-Debug/CMakeFiles/ImGuiWrapper.dir/src/imgui/imgui_impl_opengl3.cpp.obj
+out/build/x64-Debug/CMakeFiles/Viewer.dir/embed.manifest
+out/build/x64-Debug/CMakeFiles/Viewer.dir/intermediate.manifest
+out/build/x64-Debug/CMakeFiles/Viewer.dir/manifest.rc
+out/build/x64-Debug/CMakeFiles/Viewer.dir/manifest.res
+out/build/x64-Debug/CMakeFiles/Viewer.dir/src/main.cpp.obj
+out/build/x64-Debug/CMakeFiles/Viewer.dir/vc140.pdb
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/render/renderer.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/full_screen_texture_gl.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/gl_error.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/menu.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/opengl.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/surface_cube.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/trackball.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/transfer_func.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/transfer_func_2d.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/window.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/ui/wireframe_cube.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/volume/gradient_volume.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/src/volume/volume.cpp.obj
+out/build/x64-Debug/CMakeFiles/VolVis.dir/VolVis.pdb
+out/build/x64-Debug/fmtd.dll
+out/build/x64-Debug/glew32d.dll
+out/build/x64-Debug/glfw3.dll
+out/build/x64-Debug/imgui.ini
+out/build/x64-Debug/ImGuiWrapper.lib
+out/build/x64-Debug/Viewer.exe
+out/build/x64-Debug/Viewer.ilk
+out/build/x64-Debug/Viewer.pdb
+out/build/x64-Debug/VolVis.lib
