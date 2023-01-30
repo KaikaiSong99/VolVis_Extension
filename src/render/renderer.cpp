@@ -402,8 +402,12 @@ glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep)
 
         // glm::vec4 phongValue = tfValue;
         // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
-
-        accColor = tfcolor * alpha + (1 - alpha) * accColor;
+        if (alpha < 0.88) {
+            accColor = tfcolor * alpha + (1 - alpha) * accColor;
+        } else {
+            accColor = glm::vec3(0.0f, 1.0f, 0.0f) * alpha + (1 - alpha) * accColor;
+        }
+        
     }
     return glm::vec4(accColor, 0.5f);
     //return glm::vec4(0.0f);
@@ -462,12 +466,18 @@ float Renderer::getTFSecondDerivativeOpacity(float intensity, float secondDeriva
     if (len2Mid > tan * secondDerivativeMagnitude) {
         return 0.0f;
     }
-    float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
+    // float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
+    float edgeLen = sqrt(pow(sideLen, 2) + pow(m_config.TFSecondDerivativeRadius, 2));
+    float distanceToAnchorPoint = sqrt(pow(len2Mid, 2) + pow(secondDerivativeMagnitude, 2));
 
     // interpolate the opacity
-    float factor = len2Edge / (len2Edge + len2Mid);
-    float opacity = 1 * factor;
+    float factor = distanceToAnchorPoint / edgeLen;
+    float opacity = 1 * (1 - factor);
+    //float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
 
+    //// interpolate the opacity
+    //float factor = len2Edge / (len2Edge + len2Mid);
+    //float opacity = 1 * factor;
     return opacity;
     //return 0.0f;
 }

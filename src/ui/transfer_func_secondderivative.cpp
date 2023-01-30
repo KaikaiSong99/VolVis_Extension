@@ -28,7 +28,7 @@ TransferFunctionSecondDerivativeWidget::TransferFunctionSecondDerivativeWidget(c
     , m_interactingPoint(-1)
     , m_histogramImg(0)
 {
-    const glm::ivec2 res = glm::ivec2(volume.maximum(), secondDerivative.maxMagnitude() + 1);
+    const glm::ivec2 res = glm::ivec2(volume.maximum(), secondDerivative.maxMagnitude()+1);
     const auto imgData = createHistogramImage(volume, secondDerivative, res);
 
     glGenTextures(1, &m_histogramImg);
