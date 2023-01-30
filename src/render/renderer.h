@@ -3,6 +3,7 @@
 #include "render/ray_trace_camera.h"
 #include "render/render_config.h"
 #include "volume/gradient_volume.h"
+#include "volume/secondderivative_volume.h"
 #include "volume/volume.h"
 #include <cstring> // memcmp
 #include <glm/mat4x4.hpp>
@@ -29,6 +30,7 @@ public:
     Renderer(
         const volume::Volume* pVolume,
         const volume::GradientVolume* pGradientVolume,
+        const volume::SecondDerivativeVolume* pSecondDerivativeVolume,
         const render::RayTraceCamera* pCamera,
         const RenderConfig& config);
 
@@ -43,6 +45,7 @@ protected:
     glm::vec4 traceRayISO(const Ray& ray, float sampleStep) const;
     glm::vec4 traceRayComposite(const Ray& ray, float sampleStep) const;
     glm::vec4 traceRayTF2D(const Ray& ray, float sampleStep) const;
+    glm::vec4 traceRayTFSecondDerivative(const Ray& ray, float sampleStep) const;
 
     float bisectionAccuracy(const Ray& ray, float t0, float t1, float isoValue) const;
 
@@ -54,6 +57,7 @@ private:
 
     glm::vec4 getTFValue(float val) const;
     float getTF2DOpacity(float val, float gradientMagnitude) const;
+    float getTFSecondDerivativeOpacity(float val, float gradientMagnitude) const;
 
     bool instersectRayVolumeBounds(Ray& ray, const Bounds& volumeBounds) const;
     void fillColor(int x, int y, const glm::vec4& color);
@@ -61,6 +65,7 @@ private:
 protected:
     const volume::Volume* m_pVolume;
     const volume::GradientVolume* m_pGradientVolume;
+    const volume::SecondDerivativeVolume* m_pSecondDerivativeVolume;
     const render::RayTraceCamera* m_pCamera;
     RenderConfig m_config;
 

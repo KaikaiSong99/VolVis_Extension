@@ -13,6 +13,7 @@
 #include "ui/window.h"
 #include "ui/wireframe_cube.h"
 #include "volume/gradient_volume.h"
+#include "volume/secondderivative_volume.h"
 #include "volume/volume.h"
 #include <chrono>
 #include <cmath> // log2
@@ -49,6 +50,7 @@ int main(int argc, char** argv)
     // class which is responsible for creating the volume + renderer when the user loads a volume.
     std::optional<volume::Volume> optVolume;
     std::optional<volume::GradientVolume> optGradientVolume;
+    std::optional<volume::SecondDerivativeVolume> optSecondDerivativeVolume;
     std::optional<render::Renderer> optRenderer;
     ui::Menu volVisMenu { viewportSize };
 
@@ -61,14 +63,15 @@ int main(int argc, char** argv)
         optVolume.emplace(filePath.string());
         optVolume->interpolationMode = volVisMenu.interpolationMode();
         optGradientVolume.emplace(optVolume.value());
-        optRenderer.emplace(&optVolume.value(), &optGradientVolume.value(), &trackballCamera, volVisMenu.renderConfig());
+        optSecondDerivativeVolume.emplace(optVolume.value());
+        optRenderer.emplace(&optVolume.value(), &optGradientVolume.value(), &optSecondDerivativeVolume.value(), & trackballCamera, volVisMenu.renderConfig());
 
         const float maxDimension = float(glm::compMax(optVolume->dims()));
         trackballCamera.setDistance(maxDimension);
         trackballCamera.setWorldScale(maxDimension);
         trackballCamera.setLookAt(glm::vec3(optVolume->dims()) / 2.0f);
 
-        volVisMenu.setLoadedVolume(optVolume.value(), optGradientVolume.value());
+        volVisMenu.setLoadedVolume(optVolume.value(), optGradientVolume.value(), optSecondDerivativeVolume.value());
 
         redrawUserInteraction = true;
     };

@@ -48,13 +48,15 @@ void Menu::setBaseRenderResolution(const glm::ivec2& baseRenderResolution)
 
 // This function handles a part of the volume loading where we create the widget histograms, set some config values
 //  and set the menu volume information
-void Menu::setLoadedVolume(const volume::Volume& volume, const volume::GradientVolume& gradientVolume)
+void Menu::setLoadedVolume(const volume::Volume& volume, const volume::GradientVolume& gradientVolume, const volume::SecondDerivativeVolume& secondDerivativeVolume)
 {
     m_tfWidget = TransferFunctionWidget(volume);
     m_tf2DWidget = TransferFunction2DWidget(volume, gradientVolume);
+    m_tfSecondDerivativeWidget = TransferFunctionSecondDerivativeWidget(volume, secondDerivativeVolume);
 
     m_tfWidget->updateRenderConfig(m_renderConfig);
     m_tf2DWidget->updateRenderConfig(m_renderConfig);
+    m_tfSecondDerivativeWidget->updateRenderConfig(m_renderConfig);
 
     const glm::ivec3 dim = volume.dims();
     m_volumeInfo = fmt::format("Volume info:\n{}\nDimensions: ({}, {}, {})\nVoxel value range: {} - {}\n",
@@ -80,6 +82,7 @@ void Menu::drawMenu(const glm::ivec2& pos, const glm::ivec2& size, std::chrono::
         showRayCastTab(renderTime);
         showTransFuncTab();
         show2DTransFuncTab();
+        showSecondDerivativeTab();
 
         if (m_renderConfig != renderConfigBefore)
             callRenderConfigChangedCallback();
@@ -132,6 +135,7 @@ void Menu::showRayCastTab(std::chrono::duration<double> renderTime)
         ImGui::RadioButton("IsoSurface Rendering", pRenderModeInt, int(render::RenderMode::RenderIso));
         ImGui::RadioButton("Compositing", pRenderModeInt, int(render::RenderMode::RenderComposite));
         ImGui::RadioButton("2D Transfer Function", pRenderModeInt, int(render::RenderMode::RenderTF2D));
+        ImGui::RadioButton("2nd Deriv Transfer Function", pRenderModeInt, int(render::RenderMode::RenderTFSecondDerivative));
 
         ImGui::NewLine();
 
@@ -174,6 +178,15 @@ void Menu::show2DTransFuncTab()
     if (ImGui::BeginTabItem("2D transfer function")) {
         m_tf2DWidget->draw();
         m_tf2DWidget->updateRenderConfig(m_renderConfig);
+        ImGui::EndTabItem();
+    }
+}
+
+void Menu::showSecondDerivativeTab()
+{
+    if (ImGui::BeginTabItem("2nd deriv transfer function")) {
+        m_tfSecondDerivativeWidget->draw();
+        m_tfSecondDerivativeWidget->updateRenderConfig(m_renderConfig);
         ImGui::EndTabItem();
     }
 }

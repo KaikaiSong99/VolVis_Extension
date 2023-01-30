@@ -2,7 +2,9 @@
 #include "render/render_config.h"
 #include "ui/transfer_func.h"
 #include "ui/transfer_func_2d.h"
+#include "ui/transfer_func_secondderivative.h"
 #include "volume/gradient_volume.h"
+#include "volume/secondderivative_volume.h"
 #include "volume/volume.h"
 #include <chrono>
 #include <filesystem>
@@ -31,7 +33,7 @@ public:
     volume::InterpolationMode interpolationMode() const;
 
     void setBaseRenderResolution(const glm::ivec2& baseRenderResolution);
-    void setLoadedVolume(const volume::Volume& volume, const volume::GradientVolume& gradientVolume);
+    void setLoadedVolume(const volume::Volume& volume, const volume::GradientVolume& gradientVolume, const volume::SecondDerivativeVolume& secondDerivativeVolume);
 
     void drawMenu(const glm::ivec2& pos, const glm::ivec2& size, std::chrono::duration<double> renderTime);
 
@@ -40,6 +42,7 @@ private:
     void showRayCastTab(std::chrono::duration<double> renderTime);
     void showTransFuncTab();
     void show2DTransFuncTab();
+    void showSecondDerivativeTab();
 
     void callRenderConfigChangedCallback() const;
     void callInterpolationModeChangedCallback() const;
@@ -51,6 +54,7 @@ private:
 
     std::optional<TransferFunctionWidget> m_tfWidget;
     std::optional<TransferFunction2DWidget> m_tf2DWidget;
+    std::optional<TransferFunctionSecondDerivativeWidget> m_tfSecondDerivativeWidget;
 
     glm::ivec2 m_baseRenderResolution;
     float m_resolutionScale { 1.0f };

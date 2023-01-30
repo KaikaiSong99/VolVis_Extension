@@ -19,10 +19,12 @@ namespace render {
 Renderer::Renderer(
     const volume::Volume* pVolume,
     const volume::GradientVolume* pGradientVolume,
+    const volume::SecondDerivativeVolume* pSecondDerivativeVolume,
     const render::RayTraceCamera* pCamera,
     const RenderConfig& initialConfig)
     : m_pVolume(pVolume)
     , m_pGradientVolume(pGradientVolume)
+    , m_pSecondDerivativeVolume(pSecondDerivativeVolume)
     , m_pCamera(pCamera)
     , m_config(initialConfig)
 {
@@ -119,6 +121,10 @@ void Renderer::render()
             }
             case RenderMode::RenderTF2D: {
                 color = traceRayTF2D(ray, sampleStep);
+                break;
+            }
+            case RenderMode::RenderTFSecondDerivative: {
+                color = traceRayTFSecondDerivative(ray, sampleStep);
                 break;
             }
             };
@@ -305,7 +311,8 @@ glm::vec4 Renderer::traceRayComposite(const Ray& ray, float sampleStep) const
         // glm::vec4 phongValue = tfValue;
         // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
 
-        accColor = phongColor * alpha + (1 - alpha) * accColor;
+        // back to front compositing
+        accColor = tfcolor * alpha + (1 - alpha) * accColor;
     }
     return glm::vec4(accColor, 1.0f);
 
@@ -374,6 +381,34 @@ glm::vec4 Renderer::traceRayTF2D(const Ray& ray, float sampleStep) const
     //return glm::vec4(0.0f);
 }
 
+glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep) const
+{
+    glm::vec3 accColor = glm::vec3(0.0f);
+    float accAlpha = 0.0f;
+
+    // Incrementing samplePos directly instead of recomputing it each frame gives a measureable speed-up.
+    glm::vec3 samplePos = ray.origin + ray.tmax * ray.direction;
+    const glm::vec3 increment = sampleStep * ray.direction;
+
+    for (float t = ray.tmax; t > ray.tmin; t -= sampleStep, samplePos -= increment) {
+        const float val = m_pVolume->getSampleInterpolate(samplePos);
+        glm::vec4 tfValue = m_config.TFSecondDerivativeColor;
+        glm::vec3 tfcolor = glm::vec3(tfValue.x, tfValue.y, tfValue.z);
+        float alpha;
+        volume::SecondDerivativeVoxel secondDeriv = m_pSecondDerivativeVolume->getSecondDerivativeInterpolate(samplePos);
+        alpha = getTFSecondDerivativeOpacity(val, secondDeriv.magnitude);
+
+        // glm::vec3 phongColor = computePhongShading(tfcolor, gradient, m_pCamera->position(), m_pCamera->position());
+
+        // glm::vec4 phongValue = tfValue;
+        // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
+
+        accColor = tfcolor * alpha + (1 - alpha) * accColor;
+    }
+    return glm::vec4(accColor, 0.5f);
+    //return glm::vec4(0.0f);
+}
+
 // ======= TODO: IMPLEMENT ========
 // This function should return an opacity value for the given intensity and gradient according to the 2D transfer function.
 // Calculate whether the values are within the radius/intensity triangle defined in the 2D transfer function widget.
@@ -400,6 +435,34 @@ float Renderer::getTF2DOpacity(float intensity, float gradientMagnitude) const
         return 0.0f;
     }
     float len2Edge = tan * gradientMagnitude - len2Mid;
+
+    // interpolate the opacity
+    float factor = len2Edge / (len2Edge + len2Mid);
+    float opacity = 1 * factor;
+
+    return opacity;
+    //return 0.0f;
+}
+
+float Renderer::getTFSecondDerivativeOpacity(float intensity, float secondDerivativeMagnitude) const
+{
+    // calculate geometric lengths
+    float secondDerivativeMax = m_pSecondDerivativeVolume->maxMagnitude();
+    float secondDerivativeMin = m_pSecondDerivativeVolume->minMagnitude();
+    float sideLen = secondDerivativeMax - secondDerivativeMin;
+    float tan = m_config.TFSecondDerivativeRadius / sideLen;
+
+    float len2Mid;
+    if (intensity <= m_config.TFSecondDerivativeIntensity) {
+        len2Mid = m_config.TFSecondDerivativeIntensity - intensity;
+    } else {
+        len2Mid = -m_config.TFSecondDerivativeIntensity + intensity;
+    }
+    // return 0 for sample lying outside the triangle
+    if (len2Mid > tan * secondDerivativeMagnitude) {
+        return 0.0f;
+    }
+    float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
 
     // interpolate the opacity
     float factor = len2Edge / (len2Edge + len2Mid);

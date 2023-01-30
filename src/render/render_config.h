@@ -11,7 +11,8 @@ enum class RenderMode {
     RenderMIP,
     RenderIso,
     RenderComposite,
-    RenderTF2D
+    RenderTF2D,
+    RenderTFSecondDerivative
 };
 
 struct RenderConfig {
@@ -32,6 +33,11 @@ struct RenderConfig {
     float TF2DIntensity;
     float TF2DRadius;
     glm::vec4 TF2DColor;
+
+    // 2nd derivative transfer function
+    float TFSecondDerivativeIntensity;
+    float TFSecondDerivativeRadius;
+    glm::vec4 TFSecondDerivativeColor;
 };
 
 // NOTE(Mathijs): should be replaced by C++20 three-way operator (aka spaceship operator) if we require C++ 20 support from Linux users (GCC10 / Clang10).
