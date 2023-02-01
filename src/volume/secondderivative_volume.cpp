@@ -107,7 +107,8 @@ static std::vector<SecondDerivativeVoxel> computeSecondDerivativeVolume(const Vo
                 const float secondDeriv = glm::dot(H * intensity * gradients[index].dir, gradients[index].dir) / pow(gradients[index].magnitude, 2);
                 // const float a = pow(glm::length(gradients[index].dir), 2);
                 // out[index] = SecondDerivativeVoxel { glm::vec3 { 0.0f, 0.0f, 0.0f }, abs(secondDeriv) };
-                out[index] = SecondDerivativeVoxel { gradients[index].dir, abs(secondDeriv) };
+                // out[index] = SecondDerivativeVoxel { gradients[index].dir, log(abs(secondDeriv) + 1.0f) };
+                out[index] = SecondDerivativeVoxel { gradients[index].dir, sqrt(abs(secondDeriv)) };
             }
         }
     }

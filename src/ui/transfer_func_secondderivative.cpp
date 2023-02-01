@@ -21,10 +21,10 @@ static constexpr float pointRadius = 8.0f;
 static constexpr glm::ivec2 widgetSize { 475, 300 };
 
 TransferFunctionSecondDerivativeWidget::TransferFunctionSecondDerivativeWidget(const volume::Volume& volume, const volume::SecondDerivativeVolume& secondDerivative)
-    : m_intensity(201.0f)
+    : m_intensity(206.0f)
     , m_maxIntensity(volume.maximum())
-    , m_radius(60.0f)
-    , m_threshold(0.85f)
+    , m_radius(32.0f)
+    , m_threshold(0.61f)
     , m_color(0.8f, 0.0f, 0.6f, 0.3f)
     , m_color_2nd_deriv(0.0f, 1.0f, 0.0f, 0.3f)
     , m_interactingPoint(-1)

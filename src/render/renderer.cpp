@@ -327,10 +327,10 @@ glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::Gr
     glm::vec3 warmColor = glm::vec3(1.0f, 0.0f, 0.0f);
     glm::vec3 coldColor = glm::vec3(0.0f, 0.0f, 1.0f);
     // controls how storng the isocolor is
-    float a = 0.7f;
+    float a = 0.5f;
     float b = 0.2f;
-    glm::vec3 kWarm = warmColor  + lightColor * surfaceColor * a;
-    glm::vec3 kCold = coldColor  + lightColor * surfaceColor * b;
+    glm::vec3 kWarm = warmColor + lightColor * surfaceColor * a;
+    glm::vec3 kCold = coldColor + lightColor * surfaceColor * b;
 
     // glm::vec3 goochdiffuse = kd * lightColor * surfaceColor * cosTheta;
     glm::vec3 goochdiffuse = kd * (goochWeight * kCold + (1 - goochWeight) * kWarm);
