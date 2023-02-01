@@ -392,8 +392,10 @@ glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep)
 
     for (float t = ray.tmax; t > ray.tmin; t -= sampleStep, samplePos -= increment) {
         const float val = m_pVolume->getSampleInterpolate(samplePos);
-        glm::vec4 tfValue = m_config.TFSecondDerivativeColor;
-        glm::vec3 tfcolor = glm::vec3(tfValue.x, tfValue.y, tfValue.z);
+        glm::vec4 tfValue1 = m_config.TFSecondDerivativeColor1;
+        glm::vec4 tfValue2 = m_config.TFSecondDerivativeColor2;
+        glm::vec3 tfcolor1 = glm::vec3(tfValue1.x, tfValue1.y, tfValue1.z);
+        glm::vec3 tfcolor2 = glm::vec3(tfValue2.x, tfValue2.y, tfValue2.z);
         float alpha;
         volume::SecondDerivativeVoxel secondDeriv = m_pSecondDerivativeVolume->getSecondDerivativeInterpolate(samplePos);
         alpha = getTFSecondDerivativeOpacity(val, secondDeriv.magnitude);
@@ -402,10 +404,10 @@ glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep)
 
         // glm::vec4 phongValue = tfValue;
         // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
-        if (alpha < 0.88) {
-            accColor = tfcolor * alpha + (1 - alpha) * accColor;
+        if (alpha < m_config.TFSecondDerivativeThreshold) {
+            accColor = tfcolor1 * alpha + (1 - alpha) * accColor;
         } else {
-            accColor = glm::vec3(0.0f, 1.0f, 0.0f) * alpha + (1 - alpha) * accColor;
+            accColor = tfcolor2 * alpha + (1 - alpha) * accColor;
         }
         
     }

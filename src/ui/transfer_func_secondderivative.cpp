@@ -21,10 +21,12 @@ static constexpr float pointRadius = 8.0f;
 static constexpr glm::ivec2 widgetSize { 475, 300 };
 
 TransferFunctionSecondDerivativeWidget::TransferFunctionSecondDerivativeWidget(const volume::Volume& volume, const volume::SecondDerivativeVolume& secondDerivative)
-    : m_intensity(68.0f)
+    : m_intensity(201.0f)
     , m_maxIntensity(volume.maximum())
-    , m_radius(38.0f)
+    , m_radius(60.0f)
+    , m_threshold(0.85f)
     , m_color(0.8f, 0.0f, 0.6f, 0.3f)
+    , m_color_2nd_deriv(0.0f, 1.0f, 0.0f, 0.3f)
     , m_interactingPoint(-1)
     , m_histogramImg(0)
 {
@@ -186,18 +188,30 @@ void TransferFunctionSecondDerivativeWidget::draw()
     ImGui::SameLine();
     ImGui::PushItemWidth(50.f);
     ImGui::InputScalar("", ImGuiDataType_Float, &m_radius, NULL, NULL, "%.2f", ImGuiInputTextFlags_ReadOnly);
+    ImGui::NewLine();
+    ImGui::Text("2nd Deriv Threshold: ");
+    ImGui::SameLine();
+    ImGui::PushItemWidth(150.f);
+    ImGui::SliderFloat("", &m_threshold, 0.0f, 1.0f, "%.2f");
 
+    float menuWidth = ImGui::GetContentRegionAvailWidth();
     ImGui::NewLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xOffset / 2);
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * 0.4f);
-    ImGui::ColorPicker4("Color", glm::value_ptr(m_color));
+    ImGui::PushItemWidth(menuWidth * 0.3f);
+    ImGui::ColorPicker4("Color1", glm::value_ptr(m_color));
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xOffset / 2);
+    ImGui::PushItemWidth(menuWidth * 0.3f);
+    ImGui::ColorPicker4("Color2", glm::value_ptr(m_color_2nd_deriv));
 }
 
 void TransferFunctionSecondDerivativeWidget::updateRenderConfig(render::RenderConfig& renderConfig)
 {
     renderConfig.TFSecondDerivativeIntensity = m_intensity;
     renderConfig.TFSecondDerivativeRadius = m_radius;
-    renderConfig.TFSecondDerivativeColor = m_color;
+    renderConfig.TFSecondDerivativeColor1 = m_color;
+    renderConfig.TFSecondDerivativeColor2 = m_color_2nd_deriv;
+    renderConfig.TFSecondDerivativeThreshold = m_threshold;
 }
 }
 

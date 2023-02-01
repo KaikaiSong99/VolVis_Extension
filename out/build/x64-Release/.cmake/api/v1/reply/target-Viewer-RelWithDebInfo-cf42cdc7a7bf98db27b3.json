@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "integrity_tests/IntegrityTests.exe"
+			"path" : "Viewer.exe"
 		},
 		{
-			"path" : "integrity_tests/IntegrityTests.pdb"
+			"path" : "Viewer.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -22,7 +22,7 @@
 		"files" : 
 		[
 			"E:/TUDelftComputerScience/Data Visualization/project2/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake",
-			"integrity_tests/CMakeLists.txt",
+			"CMakeLists.txt",
 			"cmake/CompilerWarnings.cmake"
 		],
 		"nodes" : 
@@ -33,7 +33,7 @@
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 1,
+				"line" : 43,
 				"parent" : 0
 			},
 			{
@@ -45,13 +45,13 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 4,
+				"line" : 45,
 				"parent" : 0
 			},
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 6,
+				"line" : 44,
 				"parent" : 0
 			},
 			{
@@ -184,6 +184,10 @@
 				},
 				{
 					"backtrace" : 3,
+					"define" : "GLFW_DLL"
+				},
+				{
+					"backtrace" : 3,
 					"define" : "_SCL_SECURE_NO_WARNINGS"
 				},
 				{
@@ -210,33 +214,13 @@
 				[
 					3,
 					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
-					3,
 					3
 				],
 				"standard" : "20"
 			},
 			"sourceIndexes" : 
 			[
-				0,
-				1
+				0
 			]
 		}
 	],
@@ -244,14 +228,14 @@
 	[
 		{
 			"backtrace" : 3,
-			"id" : "VolVis::@6890427a1f51a3e7e1df"
+			"id" : "ImGuiWrapper::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 3,
-			"id" : "ImGuiWrapper::@6890427a1f51a3e7e1df"
+			"id" : "VolVis::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "IntegrityTests::@84c41ca8a0b3f4cd76ce",
+	"id" : "Viewer::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -267,6 +251,21 @@
 			{
 				"backtrace" : 3,
 				"fragment" : "VolVis.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "vcpkg_installed\\x64-windows\\lib\\glfw3dll.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "vcpkg_installed\\x64-windows\\lib\\glew32.lib",
 				"role" : "libraries"
 			},
 			{
@@ -290,18 +289,26 @@
 				"role" : "libraries"
 			},
 			{
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "glu32.lib",
+				"role" : "libraries"
+			},
+			{
 				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
 				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
-	"name" : "IntegrityTests",
-	"nameOnDisk" : "IntegrityTests.exe",
+	"name" : "Viewer",
+	"nameOnDisk" : "Viewer.exe",
 	"paths" : 
 	{
-		"build" : "integrity_tests",
-		"source" : "integrity_tests"
+		"build" : ".",
+		"source" : "."
 	},
 	"sourceGroups" : 
 	[
@@ -309,8 +316,7 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0,
-				1
+				0
 			]
 		}
 	],
@@ -319,13 +325,7 @@
 		{
 			"backtrace" : 2,
 			"compileGroupIndex" : 0,
-			"path" : "integrity_tests/src/main.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 0,
-			"path" : "integrity_tests/src/tests.cpp",
+			"path" : "src/main.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

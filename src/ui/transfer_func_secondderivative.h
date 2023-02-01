@@ -18,7 +18,9 @@ public:
 private:
     float m_intensity, m_maxIntensity;
     float m_radius;
+    float m_threshold;
     glm::vec4 m_color;
+    glm::vec4 m_color_2nd_deriv;
 
     int m_interactingPoint;
     GLuint m_histogramImg;

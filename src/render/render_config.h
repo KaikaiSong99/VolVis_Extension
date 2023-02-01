@@ -37,7 +37,9 @@ struct RenderConfig {
     // 2nd derivative transfer function
     float TFSecondDerivativeIntensity;
     float TFSecondDerivativeRadius;
-    glm::vec4 TFSecondDerivativeColor;
+    float TFSecondDerivativeThreshold;
+    glm::vec4 TFSecondDerivativeColor1;
+    glm::vec4 TFSecondDerivativeColor2;
 };
 
 // NOTE(Mathijs): should be replaced by C++20 three-way operator (aka spaceship operator) if we require C++ 20 support from Linux users (GCC10 / Clang10).
