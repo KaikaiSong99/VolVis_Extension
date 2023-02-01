@@ -21,7 +21,8 @@ Renderer::Renderer(
     const volume::GradientVolume* pGradientVolume,
     const volume::SecondDerivativeVolume* pSecondDerivativeVolume,
     const render::RayTraceCamera* pCamera,
-    const RenderConfig& initialConfig)
+    const RenderConfig& initialConfig
+    )
     : m_pVolume(pVolume)
     , m_pGradientVolume(pGradientVolume)
     , m_pSecondDerivativeVolume(pSecondDerivativeVolume)
@@ -298,7 +299,7 @@ glm::vec3 Renderer::computePhongShading(const glm::vec3& color, const volume::Gr
 }
 
 // Computes the Gooch Shading(warm-cold shading).
-glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::GradientVoxel& gradient, const glm::vec3& L, const glm::vec3& V)
+glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::GradientVoxel& gradient, const glm::vec3& L, const glm::vec3& V) const
 {
     // shading parameters
     float ka = 0.1;
@@ -306,7 +307,7 @@ glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::Gr
     float ks = 0.2;
     int alpha = 100;
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 surfaceColor = color;
+    glm::vec3 surfaceColor = color * 0.5f;
 
     glm::vec3 normal = glm::normalize(gradient.dir);
     glm::vec3 lightDir = glm::normalize(L);
@@ -324,8 +325,14 @@ glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::Gr
     }*/
     cosTheta = glm::dot(normal, lightDir);
     float goochWeight = (1.0f + cosTheta) / 2.0f;
-    glm::vec3 warmColor = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 coldColor = glm::vec3(0.0f, 0.0f, 1.0f);
+
+    /*glm::vec3 warmColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 coldColor = glm::vec3(0.0f, 0.0f, 1.0f);*/
+
+    glm::vec3 warmColor = m_config.GoochWarmColor;
+    glm::vec3 coldColor = m_config.GoochColdColor;
+    glm::vec4 tfValue = m_config.TF2DColor;
+
     // controls how storng the isocolor is
     float a = 0.5f;
     float b = 0.2f;

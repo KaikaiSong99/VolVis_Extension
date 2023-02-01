@@ -11,6 +11,7 @@ target_sources(VolVis
 		"${CMAKE_CURRENT_LIST_DIR}/ui/window.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/ui/surface_cube.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/ui/wireframe_cube.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/ui/gooch.cpp"
 
 		#"${CMAKE_CURRENT_LIST_DIR}/imgui/imgui.cpp"
 		#"${CMAKE_CURRENT_LIST_DIR}/imgui/imgui_draw.cpp"

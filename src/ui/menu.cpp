@@ -53,10 +53,12 @@ void Menu::setLoadedVolume(const volume::Volume& volume, const volume::GradientV
     m_tfWidget = TransferFunctionWidget(volume);
     m_tf2DWidget = TransferFunction2DWidget(volume, gradientVolume);
     m_tfSecondDerivativeWidget = TransferFunctionSecondDerivativeWidget(volume, secondDerivativeVolume);
+    m_goochWidget = GoochWidget();
 
     m_tfWidget->updateRenderConfig(m_renderConfig);
     m_tf2DWidget->updateRenderConfig(m_renderConfig);
     m_tfSecondDerivativeWidget->updateRenderConfig(m_renderConfig);
+    m_goochWidget->updateRenderConfig(m_renderConfig);
 
     const glm::ivec3 dim = volume.dims();
     m_volumeInfo = fmt::format("Volume info:\n{}\nDimensions: ({}, {}, {})\nVoxel value range: {} - {}\n",
@@ -83,6 +85,7 @@ void Menu::drawMenu(const glm::ivec2& pos, const glm::ivec2& size, std::chrono::
         showTransFuncTab();
         show2DTransFuncTab();
         showSecondDerivativeTab();
+        showGoochTab();
 
         if (m_renderConfig != renderConfigBefore)
             callRenderConfigChangedCallback();
@@ -184,11 +187,22 @@ void Menu::show2DTransFuncTab()
     }
 }
 
+// This renders the Second Derivative Transfer Function Widget.
 void Menu::showSecondDerivativeTab()
 {
     if (ImGui::BeginTabItem("2nd deriv transfer function")) {
         m_tfSecondDerivativeWidget->draw();
         m_tfSecondDerivativeWidget->updateRenderConfig(m_renderConfig);
+        ImGui::EndTabItem();
+    }
+}
+
+// This renders the Goochv color picker Widget.
+void Menu::showGoochTab()
+{
+    if (ImGui::BeginTabItem("Gooch Shading")) {
+        m_goochWidget->draw();
+        m_goochWidget->updateRenderConfig(m_renderConfig);
         ImGui::EndTabItem();
     }
 }

@@ -197,11 +197,11 @@ void TransferFunctionSecondDerivativeWidget::draw()
     float menuWidth = ImGui::GetContentRegionAvailWidth();
     ImGui::NewLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xOffset / 2);
-    ImGui::PushItemWidth(menuWidth * 0.3f);
+    ImGui::PushItemWidth(menuWidth * 0.2f);
     ImGui::ColorPicker4("Color1", glm::value_ptr(m_color));
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xOffset / 2);
-    ImGui::PushItemWidth(menuWidth * 0.3f);
+    ImGui::PushItemWidth(menuWidth * 0.2f);
     ImGui::ColorPicker4("Color2", glm::value_ptr(m_color_2nd_deriv));
 }
 

@@ -3,6 +3,7 @@
 #include "ui/transfer_func.h"
 #include "ui/transfer_func_2d.h"
 #include "ui/transfer_func_secondderivative.h"
+#include "ui/gooch.h"
 #include "volume/gradient_volume.h"
 #include "volume/secondderivative_volume.h"
 #include "volume/volume.h"
@@ -43,6 +44,7 @@ private:
     void showTransFuncTab();
     void show2DTransFuncTab();
     void showSecondDerivativeTab();
+    void showGoochTab();
 
     void callRenderConfigChangedCallback() const;
     void callInterpolationModeChangedCallback() const;
@@ -55,6 +57,7 @@ private:
     std::optional<TransferFunctionWidget> m_tfWidget;
     std::optional<TransferFunction2DWidget> m_tf2DWidget;
     std::optional<TransferFunctionSecondDerivativeWidget> m_tfSecondDerivativeWidget;
+    std::optional<GoochWidget> m_goochWidget;
 
     glm::ivec2 m_baseRenderResolution;
     float m_resolutionScale { 1.0f };

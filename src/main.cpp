@@ -29,7 +29,7 @@
 int main(int argc, char** argv)
 {
     // NOTE: This is the size in DPI independent window units.
-    constexpr int menuWidth = 560;
+    constexpr int menuWidth = 750;
     glm::ivec2 viewportSize { 720, 720 };
     glm::ivec2 windowSize { viewportSize.x + menuWidth, viewportSize.y };
     constexpr float frameTimeTarget = 1.0f / 60.0f; // Target 60 fps.

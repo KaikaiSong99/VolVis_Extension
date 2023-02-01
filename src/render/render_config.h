@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <cstring> // memcmp  // macOS change TH
 
@@ -41,6 +42,10 @@ struct RenderConfig {
     float TFSecondDerivativeThreshold;
     glm::vec4 TFSecondDerivativeColor1;
     glm::vec4 TFSecondDerivativeColor2;
+
+    // Gooch colors
+    glm::vec3 GoochWarmColor;
+    glm::vec3 GoochColdColor;
 };
 
 // NOTE(Mathijs): should be replaced by C++20 three-way operator (aka spaceship operator) if we require C++ 20 support from Linux users (GCC10 / Clang10).
