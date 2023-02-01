@@ -50,6 +50,7 @@ protected:
     float bisectionAccuracy(const Ray& ray, float t0, float t1, float isoValue) const;
 
     static glm::vec3 computePhongShading(const glm::vec3& color, const volume::GradientVoxel& gradient, const glm::vec3& lightDirection, const glm::vec3& viewDirection);
+    static glm::vec3 computeGoochShading(const glm::vec3& color, const volume::GradientVoxel& gradient, const glm::vec3& lightDirection, const glm::vec3& viewDirection);
 
 private:
     void resizeImage(const glm::ivec2& resolution);

@@ -183,7 +183,8 @@ glm::vec4 Renderer::traceRayISO(const Ray& ray, float sampleStep) const
 {
     static constexpr glm::vec3 isoColor { 0.8f, 0.8f, 0.2f };
     float isoValue = m_config.isoValue;
-    float shading = m_config.volumeShading;
+    float phongShading = m_config.volumeShading;
+    float goochShading = m_config.goochShading;
     float refined_t;
     // Incrementing samplePos directly instead of recomputing it each frame gives a measureable speed-up.
     glm::vec3 samplePos = ray.origin + ray.tmin * ray.direction;
@@ -193,11 +194,19 @@ glm::vec4 Renderer::traceRayISO(const Ray& ray, float sampleStep) const
         const float val = m_pVolume->getSampleInterpolate(samplePos);
 
         if (val >= isoValue) {
-            if (shading) {
+            if (phongShading) {
                 if (t!=ray.tmin)
                     samplePos = ray.origin + ray.direction * bisectionAccuracy(ray, t - sampleStep, t, isoValue);
                 return glm::vec4(computePhongShading(isoColor, m_pGradientVolume->getGradientInterpolate(samplePos), m_pCamera->position(), m_pCamera->position()), 1.0f);
-            } else {
+            } 
+            else if (goochShading)
+            {
+                if (t != ray.tmin)
+                    samplePos = ray.origin + ray.direction * bisectionAccuracy(ray, t - sampleStep, t, isoValue);
+                return glm::vec4(computeGoochShading(isoColor, m_pGradientVolume->getGradientInterpolate(samplePos), m_pCamera->position(), m_pCamera->position()), 1.0f);
+            }
+            else
+            {
 
                 return glm::vec4(isoColor, 1.0f);
             }
@@ -260,7 +269,7 @@ glm::vec3 Renderer::computePhongShading(const glm::vec3& color, const volume::Gr
     glm::vec3 viewDir = glm::normalize(V);
 
     // Ambient
-    glm::vec3 ambient = ka * lightColor * color;
+    glm::vec3 ambient = ka * lightColor * surfaceColor;
 
     // Diffuse
     float cosTheta;
@@ -270,7 +279,7 @@ glm::vec3 Renderer::computePhongShading(const glm::vec3& color, const volume::Gr
         cosTheta = glm::dot(normal, lightDir);
     }
    
-    glm::vec3 diffuse = kd * lightColor * color * cosTheta;
+    glm::vec3 diffuse = kd * lightColor * surfaceColor * cosTheta;
 
     // Specular
     float cosPhi;
@@ -281,9 +290,63 @@ glm::vec3 Renderer::computePhongShading(const glm::vec3& color, const volume::Gr
         cosPhi = glm::dot(reflectL, viewDir);
     }
      
-    glm::vec3 specular = lightColor * color * float(ks * pow(cosPhi, alpha));
+    glm::vec3 specular = lightColor * surfaceColor * float(ks * pow(cosPhi, alpha));
 
     glm::vec3 shadedColor = ambient + diffuse + specular;
+
+    return shadedColor;
+}
+
+// Computes the Gooch Shading(warm-cold shading).
+glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::GradientVoxel& gradient, const glm::vec3& L, const glm::vec3& V)
+{
+    // shading parameters
+    float ka = 0.1;
+    float kd = 0.7;
+    float ks = 0.2;
+    int alpha = 100;
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 surfaceColor = color;
+
+    glm::vec3 normal = glm::normalize(gradient.dir);
+    glm::vec3 lightDir = glm::normalize(L);
+    glm::vec3 viewDir = glm::normalize(V);
+
+    // Ambient
+    glm::vec3 ambient = ka * lightColor * surfaceColor;
+
+    // Diffuse
+    float cosTheta;
+    /*if (glm::dot(normal, lightDir) < 0) {
+        cosTheta = glm::dot(normal, -lightDir);
+    } else {
+        cosTheta = glm::dot(normal, lightDir);
+    }*/
+    cosTheta = glm::dot(normal, lightDir);
+    float goochWeight = (1.0f + cosTheta) / 2.0f;
+    glm::vec3 warmColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    glm::vec3 coldColor = glm::vec3(0.0f, 0.0f, 1.0f);
+    // controls how storng the isocolor is
+    float a = 0.7f;
+    float b = 0.2f;
+    glm::vec3 kWarm = warmColor  + lightColor * surfaceColor * a;
+    glm::vec3 kCold = coldColor  + lightColor * surfaceColor * b;
+
+    // glm::vec3 goochdiffuse = kd * lightColor * surfaceColor * cosTheta;
+    glm::vec3 goochdiffuse = kd * (goochWeight * kCold + (1 - goochWeight) * kWarm);
+
+    // Specular
+    float cosPhi;
+    glm::vec3 reflectL = glm::reflect(lightDir, normal);
+    if (glm::dot(reflectL, viewDir) < 0) {
+        cosPhi = glm::dot(reflectL, -viewDir);
+    } else {
+        cosPhi = glm::dot(reflectL, viewDir);
+    }
+
+    glm::vec3 specular = lightColor * surfaceColor * float(ks * pow(cosPhi, alpha));
+
+    glm::vec3 shadedColor = ambient + goochdiffuse + specular;
 
     return shadedColor;
 }

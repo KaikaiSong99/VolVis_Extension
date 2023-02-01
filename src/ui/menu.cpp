@@ -139,7 +139,9 @@ void Menu::showRayCastTab(std::chrono::duration<double> renderTime)
 
         ImGui::NewLine();
 
-        ImGui::Checkbox("Volume Shading", &m_renderConfig.volumeShading);
+        ImGui::Checkbox("Phong Shading", &m_renderConfig.volumeShading);
+        ImGui::SameLine();
+        ImGui::Checkbox("Gooch Shading", &m_renderConfig.goochShading);
 
         ImGui::NewLine();
 
