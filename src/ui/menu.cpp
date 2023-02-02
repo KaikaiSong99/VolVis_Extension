@@ -142,6 +142,7 @@ void Menu::showRayCastTab(std::chrono::duration<double> renderTime)
 
         ImGui::NewLine();
 
+        // checkboxes of Phong shading and Gooch shading
         ImGui::Checkbox("Phong Shading", &m_renderConfig.volumeShading);
         ImGui::SameLine();
         ImGui::Checkbox("Gooch Shading", &m_renderConfig.goochShading);
@@ -197,7 +198,7 @@ void Menu::showSecondDerivativeTab()
     }
 }
 
-// This renders the Goochv color picker Widget.
+// This renders the Gooch color picker Widget.
 void Menu::showGoochTab()
 {
     if (ImGui::BeginTabItem("Gooch Shading")) {

@@ -194,6 +194,7 @@ void TransferFunctionSecondDerivativeWidget::draw()
     ImGui::PushItemWidth(150.f);
     ImGui::SliderFloat("", &m_threshold, 0.0f, 1.0f, "%.2f");
 
+    // draw color pickers
     float menuWidth = ImGui::GetContentRegionAvailWidth();
     ImGui::NewLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + xOffset / 2);

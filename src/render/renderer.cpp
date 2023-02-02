@@ -316,18 +316,11 @@ glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::Gr
     // Ambient
     glm::vec3 ambient = ka * lightColor * surfaceColor;
 
-    // Diffuse
+    // Diffuse with Gooch shading
     float cosTheta;
-    /*if (glm::dot(normal, lightDir) < 0) {
-        cosTheta = glm::dot(normal, -lightDir);
-    } else {
-        cosTheta = glm::dot(normal, lightDir);
-    }*/
     cosTheta = glm::dot(normal, lightDir);
+    // takes [-1, 1] dot product and normalize
     float goochWeight = (1.0f + cosTheta) / 2.0f;
-
-    /*glm::vec3 warmColor = glm::vec3(1.0f, 0.0f, 0.0f);
-    glm::vec3 coldColor = glm::vec3(0.0f, 0.0f, 1.0f);*/
 
     glm::vec3 warmColor = m_config.GoochWarmColor;
     glm::vec3 coldColor = m_config.GoochColdColor;
@@ -336,10 +329,9 @@ glm::vec3 Renderer::computeGoochShading(const glm::vec3& color, const volume::Gr
     // controls how storng the isocolor is
     float a = 0.5f;
     float b = 0.2f;
+    // fuse warm-cold color with original color in phong shading
     glm::vec3 kWarm = warmColor + lightColor * surfaceColor * a;
     glm::vec3 kCold = coldColor + lightColor * surfaceColor * b;
-
-    // glm::vec3 goochdiffuse = kd * lightColor * surfaceColor * cosTheta;
     glm::vec3 goochdiffuse = kd * (goochWeight * kCold + (1 - goochWeight) * kWarm);
 
     // Specular
@@ -385,27 +377,6 @@ glm::vec4 Renderer::traceRayComposite(const Ray& ray, float sampleStep) const
         accColor = tfcolor * alpha + (1 - alpha) * accColor;
     }
     return glm::vec4(accColor, 1.0f);
-
-    // FRONT-TO-BACK (it errors on bounds as well)
-    //for (float t = ray.tmin; t < ray.tmax; t += sampleStep, samplePos += increment) {
-    //    if (accAlpha > 0.95f) {
-    //        break;
-    //    }
-    //    const float val = m_pVolume->getSampleInterpolate(samplePos);
-    //    glm::vec4 tfValue = getTFValue(val);
-    //    volume::GradientVoxel gradient = m_pGradientVolume->getGradientInterpolate(samplePos);
-    //    glm::vec3 tfcolor = glm::vec3(tfValue.x, tfValue.y, tfValue.z);
-    //    float alpha = tfValue[3];
-    //    glm::vec3 phongColor = computePhongShading(tfcolor, gradient, ray.direction, ray.direction);
-
-    //    // glm::vec4 phongValue = tfValue;
-    //    // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
-
-    //    /*accColor = phongColor * alpha + (1 - alpha) * accColor;*/
-    //    accColor = phongColor * alpha * (1 - accAlpha) + accColor;
-    //    accAlpha = alpha * (1 - accAlpha) + accAlpha;
-    //}
-    //return glm::vec4(accColor, accAlpha);
 }
 
 // ======= DO NOT MODIFY THIS FUNCTION ========
@@ -438,17 +409,9 @@ glm::vec4 Renderer::traceRayTF2D(const Ray& ray, float sampleStep) const
         float alpha;
         volume::GradientVoxel gradient = m_pGradientVolume->getGradientInterpolate(samplePos);
         alpha = getTF2DOpacity(val, gradient.magnitude);
-        
-        
-        // glm::vec3 phongColor = computePhongShading(tfcolor, gradient, m_pCamera->position(), m_pCamera->position());
-
-        // glm::vec4 phongValue = tfValue;
-        // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
-
         accColor = tfcolor * alpha + (1 - alpha) * accColor;
     }
     return glm::vec4(accColor, 0.5f);
-    //return glm::vec4(0.0f);
 }
 
 glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep) const
@@ -470,19 +433,14 @@ glm::vec4 Renderer::traceRayTFSecondDerivative(const Ray& ray, float sampleStep)
         volume::SecondDerivativeVoxel secondDeriv = m_pSecondDerivativeVolume->getSecondDerivativeInterpolate(samplePos);
         alpha = getTFSecondDerivativeOpacity(val, secondDeriv.magnitude);
 
-        // glm::vec3 phongColor = computePhongShading(tfcolor, gradient, m_pCamera->position(), m_pCamera->position());
-
-        // glm::vec4 phongValue = tfValue;
-        // glm::vec3 phongColor = computePhongShading(glm::vec3(tfValue[0], tfValue[1], tfValue[2]), m_pGradientVolume->getGradientInterpolate(samplePos), ray.direction, ray.direction) * tfValue[3];
+        // distinguish different materials
         if (alpha < m_config.TFSecondDerivativeThreshold) {
             accColor = tfcolor1 * alpha + (1 - alpha) * accColor;
         } else {
             accColor = tfcolor2 * alpha + (1 - alpha) * accColor;
         }
-        
     }
     return glm::vec4(accColor, 0.5f);
-    //return glm::vec4(0.0f);
 }
 
 // ======= TODO: IMPLEMENT ========
@@ -520,6 +478,7 @@ float Renderer::getTF2DOpacity(float intensity, float gradientMagnitude) const
     //return 0.0f;
 }
 
+// 
 float Renderer::getTFSecondDerivativeOpacity(float intensity, float secondDerivativeMagnitude) const
 {
     // calculate geometric lengths
@@ -538,20 +497,14 @@ float Renderer::getTFSecondDerivativeOpacity(float intensity, float secondDeriva
     if (len2Mid > tan * secondDerivativeMagnitude) {
         return 0.0f;
     }
-    // float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
     float edgeLen = sqrt(pow(sideLen, 2) + pow(m_config.TFSecondDerivativeRadius, 2));
     float distanceToAnchorPoint = sqrt(pow(len2Mid, 2) + pow(secondDerivativeMagnitude, 2));
 
-    // interpolate the opacity
+    // interpolate the opacity, based on how far the point is from the bottom apex
     float factor = distanceToAnchorPoint / edgeLen;
     float opacity = 1 * (1 - factor);
-    //float len2Edge = tan * secondDerivativeMagnitude - len2Mid;
 
-    //// interpolate the opacity
-    //float factor = len2Edge / (len2Edge + len2Mid);
-    //float opacity = 1 * factor;
     return opacity;
-    //return 0.0f;
 }
 
 // This function computes if a ray intersects with the axis-aligned bounding box around the volume.

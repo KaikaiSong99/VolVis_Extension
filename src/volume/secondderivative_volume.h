@@ -7,7 +7,6 @@
 
 namespace volume {
 struct SecondDerivativeVoxel {
-    glm::vec3 dir;
     float magnitude;
 };
 

@@ -10,7 +10,7 @@
 
 namespace volume {
 
-// Compute the maximum magnitude from all gradient voxels
+// Compute the maximum magnitude from all Second Derivative voxels
 static float computeMaxMagnitude(gsl::span<const SecondDerivativeVoxel> data)
 {
     return std::max_element(
@@ -22,7 +22,7 @@ static float computeMaxMagnitude(gsl::span<const SecondDerivativeVoxel> data)
         ->magnitude;
 }
 
-// Compute the minimum magnitude from all gradient voxels
+// Compute the minimum magnitude from all Second Derivative voxels
 static float computeMinMagnitude(gsl::span<const SecondDerivativeVoxel> data)
 {
     return std::min_element(
@@ -42,35 +42,14 @@ static std::vector<SecondDerivativeVoxel> computeSecondDerivativeVolume(const Vo
 
     std::vector<GradientVoxel> gradients(static_cast<size_t>(dim.x * dim.y * dim.z));
     std::vector<SecondDerivativeVoxel> out(static_cast<size_t>(dim.x * dim.y * dim.z));
-    //for (int z = 1; z < dim.z - 1; z++) {
-    //    for (int y = 1; y < dim.y - 1; y++) {
-    //        for (int x = 1; x < dim.x - 1; x++) {
-    //            const float gx = (volume.getVoxel(x + 1, y, z) - volume.getVoxel(x - 1, y, z)) / 2.0f;
-    //            const float gy = (volume.getVoxel(x, y + 1, z) - volume.getVoxel(x, y - 1, z)) / 2.0f;
-    //            const float gz = (volume.getVoxel(x, y, z + 1) - volume.getVoxel(x, y, z - 1)) / 2.0f;
 
-    //            const glm::vec3 gradient { gx, gy, gz };
-    //            const size_t index = static_cast<size_t>(x + dim.x * (y + dim.y * z));
-    //            // gradients[index] = GradientVoxel { gradient, glm::length(gradient) };
-    //            out[index] = SecondDerivativeVoxel { gradient, glm::length(gradient) };
-    //        }
-    //    }
-    //}
-
+    // calculate gradient
     for (int z = 1; z < dim.z - 1; z++) {
         for (int y = 1; y < dim.y - 1; y++) {
             for (int x = 1; x < dim.x - 1; x++) {
                 const float gx = (volume.getVoxel(x + 1, y, z) - volume.getVoxel(x - 1, y, z)) / 2.0f;
                 const float gy = (volume.getVoxel(x, y + 1, z) - volume.getVoxel(x, y - 1, z)) / 2.0f;
                 const float gz = (volume.getVoxel(x, y, z + 1) - volume.getVoxel(x, y, z - 1)) / 2.0f;
-                
-                /*mat[0][1] = 1.0f;
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        std::cout << mat[i][j] << std::endl;
-                    }
-                }*/
-                
                 const glm::vec3 gradient { gx, gy, gz };
                 const size_t index = static_cast<size_t>(x + dim.x * (y + dim.y * z));
                 gradients[index] = GradientVoxel { gradient, glm::length(gradient) };
@@ -79,6 +58,7 @@ static std::vector<SecondDerivativeVoxel> computeSecondDerivativeVolume(const Vo
         }
     }
 
+    // calculate second derivative
     for (int z = 1; z < dim.z - 1; z++) {
         for (int y = 1; y < dim.y - 1; y++) {
             for (int x = 1; x < dim.x - 1; x++) {
@@ -92,6 +72,7 @@ static std::vector<SecondDerivativeVoxel> computeSecondDerivativeVolume(const Vo
                 const size_t index_upper_z = static_cast<size_t>(x + dim.x * (y + dim.y * (z + 1)));
                 const size_t index_lower_z = static_cast<size_t>(x + dim.x * (y + dim.y * (z - 1)));
 
+                // calculate Hassian matrix (2nd partial derivatives)
                 H[0][0] = (gradients[index_upper_x].dir[0] - gradients[index_lower_x].dir[0]) / 2.0f;
                 H[0][1] = (gradients[index_upper_y].dir[0] - gradients[index_lower_y].dir[0]) / 2.0f;
                 H[0][2] = (gradients[index_upper_z].dir[0] - gradients[index_lower_z].dir[0]) / 2.0f;
@@ -103,12 +84,11 @@ static std::vector<SecondDerivativeVoxel> computeSecondDerivativeVolume(const Vo
                 H[2][0] = (gradients[index_upper_x].dir[2] - gradients[index_lower_x].dir[2]) / 2.0f;
                 H[2][1] = (gradients[index_upper_y].dir[2] - gradients[index_lower_y].dir[2]) / 2.0f;
                 H[2][2] = (gradients[index_upper_z].dir[2] - gradients[index_lower_z].dir[2]) / 2.0f;
-                // *
+
+                // the calculation method presented in the paper.
                 const float secondDeriv = glm::dot(H * intensity * gradients[index].dir, gradients[index].dir) / pow(gradients[index].magnitude, 2);
-                // const float a = pow(glm::length(gradients[index].dir), 2);
-                // out[index] = SecondDerivativeVoxel { glm::vec3 { 0.0f, 0.0f, 0.0f }, abs(secondDeriv) };
-                // out[index] = SecondDerivativeVoxel { gradients[index].dir, log(abs(secondDeriv) + 1.0f) };
-                out[index] = SecondDerivativeVoxel { gradients[index].dir, sqrt(abs(secondDeriv)) };
+                // normalize(compress the range) the absolute second derivatives to make the histogram visible
+                out[index] = SecondDerivativeVoxel { sqrt(abs(secondDeriv)) };
             }
         }
     }
@@ -164,7 +144,7 @@ SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivativeInterpolate(con
 SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivativeNearestNeighbor(const glm::vec3& coord) const
 {
     if (glm::any(glm::lessThan(coord, glm::vec3(0))) || glm::any(glm::greaterThanEqual(coord, glm::vec3(m_dim))))
-        return { glm::vec3(0.0f), 0.0f };
+        return { 0.0f };
 
     auto roundToPositiveInt = [](float f) {
         return static_cast<int>(f + 0.5f);
@@ -173,13 +153,12 @@ SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivativeNearestNeighbor
     return getSecondDerivative(roundToPositiveInt(coord.x), roundToPositiveInt(coord.y), roundToPositiveInt(coord.z));
 }
 
-// ======= TODO : IMPLEMENT ========
-// Returns the trilinearly interpolated gradinet at the given coordinate.
-// Use the linearInterpolate function that you implemented below.
+// Returns the interpolated Second Derivative at the given coordinate.
+// Use the linearInterpolate function
 SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivativeLinearInterpolate(const glm::vec3& coord) const
 {
     if (glm::any(glm::lessThan(coord, glm::vec3(0))) || glm::any(glm::greaterThanEqual(coord, glm::vec3(m_dim - 1))))
-        return { glm::vec3(0.0f), 0.0f };
+        return { 0.0f };
 
     // precalculate floor points
     int floorX = floor(coord.x);
@@ -220,17 +199,16 @@ SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivativeLinearInterpola
     return output;
 }
 
-// ======= TODO : IMPLEMENT ========
 // This function should linearly interpolates the value from g0 to g1 given the factor (t).
 // At t=0, linearInterpolate should return g0 and at t=1 it returns g1.
 SecondDerivativeVoxel SecondDerivativeVolume::linearInterpolate(const SecondDerivativeVoxel& g0, const SecondDerivativeVoxel& g1, float factor)
 {
-    SecondDerivativeVoxel interpolated_G = { glm::vec3(0.0f), 0.0f };
+    SecondDerivativeVoxel interpolated_G = { 0.0f };
     interpolated_G.magnitude = g0.magnitude * (1 - factor) + g1.magnitude * factor;
     return interpolated_G;
 }
 
-// This function returns a gradientVoxel without using interpolation
+// This function returns a SecondDerivativeVoxel without using interpolation
 SecondDerivativeVoxel SecondDerivativeVolume::getSecondDerivative(int x, int y, int z) const
 {
     const size_t i = static_cast<size_t>(x + m_dim.x * (y + m_dim.y * z));

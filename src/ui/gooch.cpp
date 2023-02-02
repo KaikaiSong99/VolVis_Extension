@@ -16,8 +16,6 @@ static std::vector<glm::vec4> createHistogramImage(
 
 namespace ui {
 
-// Radius of the three points in the histogram image.
-static constexpr float pointRadius = 8.0f;
 static constexpr glm::ivec2 widgetSize { 475, 300 };
 
 GoochWidget::GoochWidget()
@@ -25,17 +23,6 @@ GoochWidget::GoochWidget()
     , m_colorCold(0.0f, 0.0f, 1.0f)
     , m_interactingPoint(-1)
 {
-    /*const glm::ivec2 res = glm::ivec2(volume.maximum(), secondDerivative.maxMagnitude() + 1);
-    const auto imgData = createHistogramImage(volume, secondDerivative, res);
-
-    glGenTextures(1, &m_histogramImg);
-    glBindTexture(GL_TEXTURE_2D, m_histogramImg);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, m_histogramImg);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, res.x, res.y, 0, GL_RGBA, GL_FLOAT, imgData.data());*/
 }
 
 // Draw the widget and handle interactions
@@ -46,7 +33,6 @@ void GoochWidget::draw()
     ImGui::Text("Gooch shading color picker");
     ImGui::Text("You can choose warm color on the left and cold color on the right");
 
-    // Histogram image is positioned to the right of the content region.
     const glm::vec2 canvasSize { widgetSize.x, widgetSize.y - 20 };
     glm::vec2 canvasPos = ImToGlm(ImGui::GetCursorScreenPos()); // this is the imgui draw cursor, not mouse cursor
     const float xOffset = (ImToGlm(ImGui::GetContentRegionAvail()).x - canvasSize.x);
